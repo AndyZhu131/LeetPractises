@@ -9,58 +9,31 @@ from typing import List
 # @lc code=start
 class Solution:
     def maxSubArray(self, nums: List[int]) -> int:
-        if self.allNegCheck(nums):
-            return max(nums)
-        sum = [0, 0, 0]
-        isPos = True
-        index = 0
-        for x in nums:
-            isPos = x >= 0
-            if not isPos and index == 0:
-                index = 1
-            elif isPos and index == 1:
-                index = 2
-            elif not isPos and index == 2:
-                index = 1
-                self.calculate(sum)
-            sum[index] += x
-            print(sum)
-        
-        self.calculate(sum)
-        return max(sum)
-    
-    def calculate(self, sum: List[int]):
-        if sum[0] + sum[1] > 0 and sum[1] + sum[2] > 0:
-            sum[0] = sum[0] + sum[1] + sum[2]
-        else:
-            sum[0] = max(sum)
-        sum[1] = 0
-        sum[2] = 0
-    
-    def allNegCheck(self, nums):
         if not nums:
             return 0
             
-        # Handle case with all negative numbers
-        all_negative = True
-        for num in nums:
-            if num >= 0:
-                all_negative = False
-                break
-        print(f"all negative check: {all_negative}")
+        # Kadane's Algorithm - O(n) time, O(1) space
+        current_sum = nums[0]
+        max_sum = nums[0]
         
-        return all_negative
+        for i in range(1, len(nums)):
+            # Either extend the current subarray or start a new one
+            current_sum = max(nums[i], current_sum + nums[i])
+            max_sum = max(max_sum, current_sum)
+        
+        return max_sum
         
 # @lc code=end
 
 # Test case
 if __name__ == "__main__":
     solution = Solution()
-    nums = [-2,1,-3,4,-1,2,1,-5,4]
+    nums = [-9,-2,1,8,7,-6,4,9,-9,-5,0,5,-2,5,9,7]
+
 
 
     result = solution.maxSubArray(nums)
-    expected = 6
+    expected = 33
     print(f"Input: {nums}")
     print(f"Expected: {expected}, Got: {result}")
     print(f"Pass: {result == expected}")
